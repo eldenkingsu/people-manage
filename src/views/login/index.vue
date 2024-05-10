@@ -13,11 +13,11 @@
           <el-form-item prop="password">
             <el-input v-model="loginForm.password" show-password placeholder="请输入密码" />
           </el-form-item>
-          <el-form-item>
-            <el-checkbox>用户平台使用协议</el-checkbox>
+          <el-form-item prop="isAgree">
+            <el-checkbox v-model="loginForm.isAgree">用户平台使用协议</el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button style=" width: 350px;" type="primary"> 登录</el-button>
+            <el-button style=" width: 350px;" type="primary" @click="login"> 登录</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -57,8 +57,26 @@ export default {
             trigger: 'blur'
           }
         ],
-        isAgree: []
+        // required智能检测null undefined
+        isAgree: [{
+          // 自定义校验
+          validator: (rule, value, callback) => {
+            // rule 校验规则
+            // value 校验的值
+            // callback函数， promise resolve reject
+            value ? callback() : callback(new Error('您必须勾选用户使用协议'))
+          }
+        }]
       }
+    }
+  },
+  methods: {
+    login() {
+      this.$refs.form.validate((isOK) => {
+        if (!isOK) {
+          alert('校验未通过')
+        }
+      })
     }
   }
 }
